@@ -31,15 +31,9 @@ export default function Generator() {
   ]);
   const [selectedSongs, setSelectedSongs] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState('');
-  const [playedSongs, setPlayedSongs] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     loadSongs();
-    // Load played songs from localStorage
-    const stored = localStorage.getItem('playedSongs');
-    if (stored) {
-      setPlayedSongs(new Set(JSON.parse(stored)));
-    }
   }, []);
 
   const loadSongs = async () => {
@@ -207,17 +201,6 @@ export default function Generator() {
     const tags = (song.metadata?.tags || '').toLowerCase();
     return title.includes(query) || tags.includes(query);
   });
-
-  const markAsPlayed = (songId: string) => {
-    const newPlayed = new Set(playedSongs);
-    newPlayed.add(songId);
-    setPlayedSongs(newPlayed);
-    localStorage.setItem('playedSongs', JSON.stringify([...newPlayed]));
-  };
-
-  const isNewSong = (songId: string) => {
-    return !playedSongs.has(songId);
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-orange-950 to-gray-900 w-full">
@@ -451,16 +434,9 @@ export default function Generator() {
 
                   <div className="flex justify-between items-start mb-4">
                     <div className="flex-1 min-w-0 pl-8">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-lg font-bold text-gray-100 truncate">
-                          {song.title || 'Untitled'}
-                        </h3>
-                        {song.status === 'complete' && isNewSong(song.id) && (
-                          <span className="px-2 py-0.5 bg-orange-500 text-white text-xs font-bold rounded-full animate-pulse">
-                            NEW
-                          </span>
-                        )}
-                      </div>
+                      <h3 className="text-lg font-bold text-gray-100 mb-1 truncate">
+                        {song.title || 'Untitled'}
+                      </h3>
                       {song.metadata?.tags && (
                         <p className="text-sm text-gray-400 truncate">{song.metadata.tags}</p>
                       )}
@@ -478,7 +454,6 @@ export default function Generator() {
                       <audio 
                         controls 
                         className="w-full mb-3"
-                        onPlay={() => markAsPlayed(song.id)}
                       >
                         <source src={song.audio_url} type="audio/mpeg" />
                       </audio>
