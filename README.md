@@ -34,7 +34,7 @@ A web-based interface for generating AI music using Suno's API. Built with Next.
 ### 1. Clone the suno-api project
 
 ```bash
-git clone https://github.com/gcui-art/suno-api.git
+git clone https://github.com/ZwaneProgram/Suno-Song-Batch-Generator.git
 cd suno-api
 npm install
 ```
@@ -45,8 +45,8 @@ Create a `.env` file in the suno-api root directory:
 
 ```env
 SUNO_COOKIE=your_suno_cookie_here
-TWOCAPTCHA_KEY=your_2captcha_api_key_here
-BROWSER=chromium
+TWOCAPTCHA_KEY=your_2captcha_api_key_here (optional)
+BROWSER=chromium/firefox
 BROWSER_GHOST_CURSOR=false
 BROWSER_LOCALE=en
 BROWSER_HEADLESS=true
