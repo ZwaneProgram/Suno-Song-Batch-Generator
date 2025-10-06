@@ -160,7 +160,7 @@ export default function Generator() {
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `${song.title || 'Untitled'}.mp3`;
+        link.download = `${song.title || 'Untitled'}.wav`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -183,7 +183,7 @@ export default function Generator() {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `${title || 'Untitled'}.mp3`;
+      link.download = `${title || 'Untitled'}.wav`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
