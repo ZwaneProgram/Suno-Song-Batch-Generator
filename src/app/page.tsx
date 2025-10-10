@@ -31,10 +31,31 @@ export default function Generator() {
   ]);
   const [selectedSongs, setSelectedSongs] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState('');
+  const [songDurations, setSongDurations] = useState<Record<string, string>>({});
 
   useEffect(() => {
     loadSongs();
   }, []);
+
+  // Load audio durations when songs change
+  useEffect(() => {
+    if (songs.length > 0) {
+      songs.forEach(song => {
+        if (song.status === 'complete' && song.audio_url) {
+          const audio = document.getElementById(`audio-${song.id}`) as HTMLAudioElement;
+          if (audio) {
+            audio.addEventListener('loadedmetadata', () => {
+              const duration = audio.duration;
+              const minutes = Math.floor(duration / 60);
+              const seconds = Math.floor(duration % 60);
+              const durationText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+              setSongDurations(prev => ({ ...prev, [song.id]: durationText }));
+            });
+          }
+        }
+      });
+    }
+  }, [songs]);
 
   const loadSongs = async () => {
     setLoading(true);
@@ -454,9 +475,16 @@ export default function Generator() {
                       <audio 
                         controls 
                         className="w-full mb-3"
+                        id={`audio-${song.id}`}
+                        preload="metadata"
                       >
                         <source src={song.audio_url} type="audio/mpeg" />
                       </audio>
+                      <p className="text-sm text-gray-400 mb-3 text-center">
+                        Duration: <span className="font-mono text-orange-300" id={`duration-${song.id}`}>
+                          {songDurations[song.id] || 'Loading...'}
+                        </span>
+                      </p>
                       <button
                         onClick={() => downloadSingleSong(song.audio_url!, song.title)}
                         className="block w-full text-center bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2.5 px-4 rounded-lg transition-all"
